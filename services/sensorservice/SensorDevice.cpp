@@ -19,6 +19,8 @@
 #include <stdint.h>
 #include <sys/types.h>
 
+#include <cutils/properties.h>
+
 #include <utils/Atomic.h>
 #include <utils/Errors.h>
 #include <utils/Singleton.h>
@@ -41,9 +43,14 @@ SensorDevice::SensorDevice()
     :  mSensorDevice(0),
        mSensorModule(0)
 {
-    status_t err = hw_get_module(SENSORS_HARDWARE_MODULE_ID,
-            (hw_module_t const**)&mSensorModule);
-
+	status_t err;
+#ifdef ALT_SENSOR_ID
+	if (property_get_bool("ro.sensors.alt", false))
+	    err = hw_get_module(ALT_SENSOR_ID, (hw_module_t const**)&mSensorModule);
+	else
+#endif
+	    err = hw_get_module(SENSORS_HARDWARE_MODULE_ID, (hw_module_t const**)&mSensorModule);
+		
     ALOGE_IF(err, "couldn't load %s module (%s)",
             SENSORS_HARDWARE_MODULE_ID, strerror(-err));
 

@@ -1,6 +1,10 @@
 LOCAL_PATH:= $(call my-dir)
 include $(CLEAR_VARS)
 
+ifneq ($(TARGET_ALT_SENSOR_ID),)
+ALT_SENSOR_ID := $(strip $(TARGET_ALT_SENSOR_ID))
+endif
+
 LOCAL_SRC_FILES:= \
 	BatteryService.cpp \
 	CorrectedGyroSensor.cpp \
