@@ -41,8 +41,11 @@ SensorDevice::SensorDevice()
     :  mSensorDevice(0),
        mSensorModule(0)
 {
-    status_t err = hw_get_module(SENSORS_HARDWARE_MODULE_ID,
-            (hw_module_t const**)&mSensorModule);
+    status_t err;
+    if (property_get_bool("ro.sensors.sensorsecond", false))
+	    err = hw_get_module("sensorsecond", (hw_module_t const**)&mSensorModule);
+    else
+	    err = hw_get_module(SENSORS_HARDWARE_MODULE_ID, (hw_module_t const**)&mSensorModule);
 
     ALOGE_IF(err, "couldn't load %s module (%s)",
             SENSORS_HARDWARE_MODULE_ID, strerror(-err));
